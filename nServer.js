@@ -1,5 +1,7 @@
-const mongo = require('mongodb').MongoClient;
-const client = require('socket.io').listen(10086).sockets;
+var mongo = require('mongodb').MongoClient;
+var client = require('socket.io').listen(10086).sockets;
+var url = 'http://127.0.0.1:5000/api_all_result';
+var url2 = 'http://127.0.0.1:5000/api_latest_result';
 
 mongo.connect('mongodb://127.0.0.1/', function(err,db){
 
@@ -9,37 +11,54 @@ mongo.connect('mongodb://127.0.0.1/', function(err,db){
 
 	console.log('mongo connected..');
 
-
-	let dbo =db.db("test");
+	var dbo =db.db("test");
 
 	dbo.createCollection("patients" , function(err, res){
 			if(err){
 			throw err;
 		};
 
-  console.log("Collection created!");
+  	console.log("Collection created!");
     
 
 	setInterval (function(){
+ 
+	 var temperature = (Math.random()*(38.3-36.1)+36.1).toFixed(1);
+	 var date = new Date().toLocaleString();
 
-		 
-	 let temperature = (Math.random()*(38.3-36.1)+36.1).toFixed(1);
-	 
-		 
+	 console.log(date); 
 	 console.log(temperature);
 
-	 dbo.collection("patients").insertOne({temperature: temperature},function(err,res){
+	 dbo.collection("patients").insertOne({temperature: temperature, date: date},function(err,res){
 	 	if(err){
 		throw err;
 	};
-	 	console.log("save record");
+	 	console.log("One record saved!");
   	});
 		 
-	}, 5000);
+	}, 50000);
 
 	});
 
 
 });
+
+client.on('connection', function(socket){
+	console.log("client connected");
+
+	socket.on('req_api_all', function(){
+		console.log("client request api");
+		socket.emit('res_api_all', url);
+	})
+
+	socket.on('req_api_limit', function(){
+		console.log("client request api");
+		socket.emit('res_api_limit', url2);
+	})
+
+	socket.on('disconnect',function(){
+  	console.log("client disconnected");
+  	});
+})
 
 
