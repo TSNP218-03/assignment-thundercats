@@ -4,10 +4,10 @@ How to run :
 
 First, download or clone to this repository.
 
-Next install the following things:
-1.NodeJs
-2.MongoDB
-3.Python
+Next install these three things:
+1. NodeJs
+2. MongoDB
+3. Python
 
 For Nodejs:
 After downloaded and installed, open up the NodeJS directory and drag the "js" folder and "admin_cosole.html", "nServer.js", "socket.io.js" into it directory.
