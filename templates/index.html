@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Real-Time Chart with Plotly</title>
+  <meta name="description" content="The ThunderCats">
+  <meta name="author" content="SitePoint">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js" charset="utf-8"></script>
+</head>
+<body>
+  <div class="navbar"><span> Real-Time Chart with Plotly.js</span></div>
+    <div class="wrapper">
+      <div id="chart"></div>
+	</div>
+  <button id="btn1">click me to show real time chart!</button>
+    <script>
+                $(document).ready(function(){
+                $("#btn1").click(function(){
+
+                  ajaxGetApi();
+                  $("#btn1").attr("disabled","disabled");
+                  setInterval(function(){ ajaxGetApi() }, 10000);
+                   });
+                 });
+                //make ajax request to get the data
+                function ajaxGetApi(count){
+                    $.ajax({
+                    type: 'GET',
+                    url: '/api_all_result',
+                    dataType: "json",
+                    success: function (data) {
+                      //store the data into array
+                      function getData(){
+                        var arr = new Array();
+                          if(data.length){
+                            for(var i=0; i<data.length; i++){
+                              arr.push(data[i].temperature);
+                            }
+                          }
+                          return arr;
+                      }
+                           //plot the chart
+                           Plotly.plot('chart', [{
+                              y: getData(),
+                              type: 'line'
+                            }]);
+                          },
+                    error: function () {
+                        console.log("failed to get data");
+                    }
+                    });
+                };
+    </script>
+  </body>
+</html>
